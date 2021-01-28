@@ -202,6 +202,7 @@ function createWindow() {
 			nodeIntegration: false,
 			webSecurity: true, // none
 			nodeIntegrationInWorker: true,
+			enableRemoteModule: true
 			// sandbox: false
 		},
 	});
