@@ -1,17 +1,17 @@
-const {ipcMain} = require('electron');
-const NativeNotification = require('electron-native-notification');
+const {ipcMain, app, Notification} = require('electron');
+
+let notificationCount = 0;
 
 exports.addDesktopNotificationHack = function addDesktopNotificationHack(iconPath) {
 	ipcMain.on('notifications', async (e, msg) => {
-		if (msg.count > 0) {
+		if (msg.count > 0 && msg.count > notificationCount) {
+			notificationCount = msg.count
 			const body = ((msg.text) ? `(${msg.count}): ${msg.text}` : `You got ${msg.count} notification(s)`);
-			const notification = new NativeNotification(
-				'Microsoft Teams',
-				{
-					body,
-					icon: iconPath,
-				},
-			);
+			const notification = new Notification({
+				title: 'Microsoft Teams',
+				body: body,
+
+			});
 			notification.onclick = () => {
 				window.show();
 				window.focus();

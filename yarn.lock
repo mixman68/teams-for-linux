@@ -655,11 +655,6 @@ electron-editor-context-menu@1.1.1:
     lodash.isempty "^4.1.2"
     lodash.isfunction "^3.0.8"
 
-electron-native-notification@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/electron-native-notification/-/electron-native-notification-1.2.1.tgz#24831008fda635ddf5adb0ccedfca5dcf3f35fdc"
-  integrity sha512-vjbhA80nrzFtC33jDk+6a5z55vrannZtWd14clMDEj8YlFRLxIDbunjOaT3yBiHNBK7c/fGNtYkVZYMYgFpc1Q==
-
 electron-publish@22.9.1:
   version "22.9.1"
   resolved "https://registry.npmjs.org/electron-publish/-/electron-publish-22.9.1.tgz#7cc76ac4cc53efd29ee31c1e5facb9724329068e"
