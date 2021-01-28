@@ -24,4 +24,7 @@ if (!gotTheLock) {
 	app.on('renderer-process-crashed', (...args) => console.log('renderer-process-crashed', args));
 	app.on('will-quit', () => console.log('will-quit'));
 	app.on('certificate-error', certificate.onAppCertificateError);
+	if(process.platform === 'darwin') {
+		app.on('activate', mainAppWindow.onActivate);
+	}
 }

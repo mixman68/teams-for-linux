@@ -222,3 +222,9 @@ exports.onBeforeQuit = function onBeforeQuit() {
 		menus.shouldQuit = true;
 	}
 };
+
+exports.onActivate = function onActivate() {
+	if(process.platform === 'darwin' && !window.isVisible()){
+		window.show();
+	}
+};
