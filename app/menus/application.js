@@ -17,6 +17,10 @@ exports = module.exports = (Menus) => ({
 			click: () => Menus.hide(),
 		},
 		{
+			label: 'Fix Teams blank screen',
+			click: () => Menus.purgeServiceWorker(),
+		},
+		{
 			label: 'Debug',
 			accelerator: 'ctrl+D',
 			click: () => Menus.debug(),

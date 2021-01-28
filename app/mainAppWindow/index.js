@@ -101,6 +101,10 @@ exports.onAppReady = function onAppReady() {
 
 	const url = processArgs(process.argv);
 	window.loadURL(url ? url : config.url);
+	//When receive fix teams purge service, reload window
+	ipcMain.on('purge-service-worker-done', () => {
+		window.loadURL(url ? url : config.url);
+	});
 
 	if (config.webDebug) {
 		window.openDevTools();

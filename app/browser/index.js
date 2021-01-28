@@ -6,6 +6,19 @@
 	const ActivityManager = require('./notifications/activityManager');
 	const config = remote.getGlobal('config');
 
+	ipcRenderer.on('purge-service-worker', () => {;
+		if ('serviceWorker' in navigator) {
+			navigator.serviceWorker.getRegistrations().then(function(registrations) {
+				console.log('Unregister SW for workaround a blank page bug');
+				for(let registration of registrations) {
+					registration.unregister();
+				}}).catch(function(err) {
+				console.log('Service Worker registration failed: ', err);
+			});
+		}
+		ipcRenderer.send('purge-service-worker-done');
+	});
+
 	if (config.onlineOfflineReload) {
 		require('./onlineOfflineListener')();
 	}
@@ -99,9 +112,9 @@
 		injector.get('settingsService').appConfig.disableCallingOnlineCheck = false;
 	}
 
-	Object.defineProperty(navigator.serviceWorker, 'register', {
+	/*Object.defineProperty(navigator.serviceWorker, 'register', {
 		value: () => {
 			return Promise.reject();
 		}
-	});
+	});*/
 }());

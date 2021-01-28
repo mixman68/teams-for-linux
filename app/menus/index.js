@@ -1,8 +1,10 @@
-const { app, Menu } = require('electron');
+const { app, Menu, ipcMain } = require('electron');
 const application = require('./application');
 const preferences = require('./preferences');
 const help = require('./help');
 const Tray = require('./tray');
+const fs = require('fs');
+const path = require('path');
 
 class Menus {
 	constructor(window, config, iconPath) {
@@ -39,6 +41,17 @@ class Menus {
 		this.window.hide();
 	}
 
+	purgeServiceWorker() {
+		//Clear service
+		const userDataPath = app.getPath('userData');
+		const serviceWorkerPath = path.join(userDataPath,'Partitions',config.partition.replace('persist:',''),'Service Worker');
+		if(fs.existsSync(serviceWorkerPath)){
+			console.log('Service worker path exists, rm this');
+			fs.rmdirSync(serviceWorkerPath, { recursive:true });
+		}
+		this.window.webContents.send('purge-service-worker');
+	}
+
 	initialize() {
 		const appMenu = application(this);
 
@@ -66,6 +79,10 @@ class Menus {
 				label: app.getName(),
 				submenu: [
 					{ role: 'about' },
+					{
+						label: 'Fix Teams blank screen',
+						click: () => this.purgeServiceWorker(),
+					},
 					{ type: 'separator' },
 					{ role: 'services', submenu: [] },
 					{ type: 'separator' },
