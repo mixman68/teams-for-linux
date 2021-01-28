@@ -19,7 +19,7 @@ if (!gotTheLock) {
 } else {
 	app.on('second-instance', mainAppWindow.onAppSecondInstance);
 	app.on('ready', mainAppWindow.onAppReady);
-	app.on('before-quit', () => console.log('before-quit'));
+	app.on('before-quit', mainAppWindow.onBeforeQuit);
 	app.on('quit', () => console.log('quit'));
 	app.on('renderer-process-crashed', (...args) => console.log('renderer-process-crashed', args));
 	app.on('will-quit', () => console.log('will-quit'));

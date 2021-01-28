@@ -3,18 +3,18 @@ const application = require('./application');
 const preferences = require('./preferences');
 const help = require('./help');
 const Tray = require('./tray');
-let shouldQuit = false;
 
 class Menus {
 	constructor(window, config, iconPath) {
 		this.window = window;
 		this.iconPath = iconPath;
 		this.config = config;
+		this.shouldQuit = false;
 		this.initialize();
 	}
 
 	quit() {
-		shouldQuit = true;
+		this.shouldQuit = true;
 		app.quit();
 	}
 
@@ -49,7 +49,7 @@ class Menus {
 		]));
 
 		this.window.on('close', (event) => {
-			if (!shouldQuit && !this.config.closeAppOnCross) {
+			if (!this.shouldQuit && !this.config.closeAppOnCross) {
 				event.preventDefault();
 				this.hide();
 			} else {
@@ -57,7 +57,31 @@ class Menus {
 			}
 		});
 
-		new Tray(this.window, appMenu.submenu, this.iconPath);
+		//On mac no systray
+		if (process.platform !== 'darwin') {
+			new Tray(this.window, appMenu.submenu, this.iconPath);
+		} else {
+			//Menu for mac
+			const menuMac = {
+				label: app.getName(),
+				submenu: [
+					{ role: 'about' },
+					{ type: 'separator' },
+					{ role: 'services', submenu: [] },
+					{ type: 'separator' },
+					{ role: 'hide' },
+					{ role: 'hideothers' },
+					{ role: 'unhide' },
+					{ type: 'separator' },
+					{ role: 'quit' }
+				]
+			};
+			Menu.setApplicationMenu(Menu.buildFromTemplate([
+				menuMac,
+				preferences(),
+				help(app, this.window),
+			]));
+		}
 	}
 }
 

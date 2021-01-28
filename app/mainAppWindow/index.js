@@ -12,6 +12,7 @@ const onlineOffline = require('../onlineOffline');
 let aboutBlankRequestCount = 0;
 
 let window = null;
+let menus = null;
 
 exports.onAppReady = function onAppReady() {
 	window = createWindow();
@@ -19,32 +20,32 @@ exports.onAppReady = function onAppReady() {
 	// ipcMain.on('captureScreen', (event, filename) => {
 	// 	console.log('captureScreen called', event, filename);
 	// 	// let screenCaptureProvider = module.require('./screenCaptureProvider');
-    //     // screenCaptureProvider.getScreenCapture(filename, true)
-    //     //     .catch(() => {
-    //     //         this._loggingService.logError('Error capturing screen');
-    //     //     });
+	//     // screenCaptureProvider.getScreenCapture(filename, true)
+	//     //     .catch(() => {
+	//     //         this._loggingService.logError('Error capturing screen');
+	//     //     });
 	// });
 
 	// ipcMain.on('setSkypeCookie', (event, skypeCookie) => {
-    //     try {
-    //         window.webContents.session.cookies.set({ url: 'https://api.asm.skype.com', domain: '.asm.skype.com', name: 'skypetoken_asm', value: skypeCookie },
-    //             (error, cookies) => {
-    //                 if (error) {
-    //                     // TODO sanitize log and error
-    //                     console.error('Error saving cookie');
-    //                 };
-    //             });
-    //     } catch (e) {
-    //         // TODO sanitize log and error
-    //         console.error('Unable set cookie due to error');
-    //     }
-    // });
+	//     try {
+	//         window.webContents.session.cookies.set({ url: 'https://api.asm.skype.com', domain: '.asm.skype.com', name: 'skypetoken_asm', value: skypeCookie },
+	//             (error, cookies) => {
+	//                 if (error) {
+	//                     // TODO sanitize log and error
+	//                     console.error('Error saving cookie');
+	//                 };
+	//             });
+	//     } catch (e) {
+	//         // TODO sanitize log and error
+	//         console.error('Unable set cookie due to error');
+	//     }
+	// });
 
 	window.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL, isMainFrame) => {
 		console.log('did-fail-load', event, errorCode, errorDescription, validatedURL, isMainFrame);
 	});
 
-	new Menus(window, config, iconPath);
+	menus = new Menus(window, config, iconPath);
 
 	// window.webContents.on('ipc-message', (...args) => console.log(args));
 	// window.webContents.on('ipc-message-sync', (...args) => console.log(args));
@@ -214,3 +215,10 @@ function createWindow() {
 
 	return window;
 }
+
+exports.onBeforeQuit = function onBeforeQuit() {
+	console.log('before-quit');
+	if(process.platform === 'darwin'){
+		menus.shouldQuit = true;
+	}
+};
