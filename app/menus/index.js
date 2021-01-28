@@ -79,9 +79,15 @@ class Menus {
 				label: app.getName(),
 				submenu: [
 					{ role: 'about' },
+					{ type: 'separator' },
 					{
 						label: 'Fix Teams blank screen',
 						click: () => this.purgeServiceWorker(),
+					},
+					{
+						label: 'Refresh',
+						accelerator: 'CmdOrCtrl+R',
+						click: () => this.reload(),
 					},
 					{ type: 'separator' },
 					{ role: 'services', submenu: [] },
