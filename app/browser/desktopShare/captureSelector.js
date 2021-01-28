@@ -1,9 +1,8 @@
-const { remote, screen } = require('electron');
-const { BrowserWindow } = remote;
+const { remote } = require('electron');
 
 function selectSource(callback) {
-	var display  = screen.getPrimaryDisplay();
-	const selectorWindow = new BrowserWindow({
+	var display  = remote.screen.getPrimaryDisplay();
+	const selectorWindow = new remote.BrowserWindow({
 		title: 'Share Your Screen',
 		parent: remote.getCurrentWindow(),
 		autoHideMenuBar: true,
@@ -11,7 +10,10 @@ function selectSource(callback) {
 		width: 680,
 		height: 480,
 		x: display.bounds.width - 680,
-		y: display.bounds.height -480
+		y: display.bounds.height -480,
+		webPreferences: {
+			nodeIntegration: true
+		}
 	});
 
 	selectorWindow.webContents.once('did-finish-load', function () {
@@ -25,7 +27,7 @@ function selectSource(callback) {
 	});
 
 	selectorWindow.on('close', () => callback());
-	selectorWindow.on('choseDesktopMedia', callback);
+	selectorWindow.on('chooseDesktopMedia', callback);
 	selectorWindow.loadURL(url);
 }
 

@@ -33,6 +33,7 @@ function setupLinux(locale) {
 	if (process.env.HUNSPELL_DICTIONARIES || locale !== 'en_US') {
 		// apt-get install hunspell-<locale> can be run for easy access to other dictionaries
 		var location = process.env.HUNSPELL_DICTIONARIES || '/usr/share/hunspell';
+		console.log('dictionary location', location);
 		spellchecker.setDictionary(locale, location);
 	}
 }
@@ -43,11 +44,16 @@ if (!process.env.LANG) {
 	process.env.LANG = appLocale;
 }
 
+console.log('appLocale', appLocale);
+
 setupLinux(appLocale);
 
-var simpleChecker = window.spellChecker = {
-	spellCheck: function (text) {
-		return !this.isMisspelled(text);
+var simpleChecker = {
+	spellCheck: function (words, callback) {
+		setTimeout(() => {
+			const misspelled = words.filter(x => spellchecker.isMisspelled(x))
+			callback(misspelled)
+		}, 0);
 	},
 	isMisspelled: function (text) {
 		var misspelled = spellchecker.isMisspelled(text);
@@ -75,7 +81,6 @@ var simpleChecker = window.spellChecker = {
 
 webFrame.setSpellCheckProvider(
 	appLocale,
-	true,
 	simpleChecker
 );
 

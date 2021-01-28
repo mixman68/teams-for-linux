@@ -1,5 +1,5 @@
 
-const { shell, BrowserWindow } = require('electron');
+const { shell, ipcMain, BrowserWindow } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const path = require('path');
 const login = require('../login');
@@ -15,7 +15,40 @@ let window = null;
 
 exports.onAppReady = function onAppReady() {
 	window = createWindow();
+
+	// ipcMain.on('captureScreen', (event, filename) => {
+	// 	console.log('captureScreen called', event, filename);
+	// 	// let screenCaptureProvider = module.require('./screenCaptureProvider');
+    //     // screenCaptureProvider.getScreenCapture(filename, true)
+    //     //     .catch(() => {
+    //     //         this._loggingService.logError('Error capturing screen');
+    //     //     });
+	// });
+
+	// ipcMain.on('setSkypeCookie', (event, skypeCookie) => {
+    //     try {
+    //         window.webContents.session.cookies.set({ url: 'https://api.asm.skype.com', domain: '.asm.skype.com', name: 'skypetoken_asm', value: skypeCookie },
+    //             (error, cookies) => {
+    //                 if (error) {
+    //                     // TODO sanitize log and error
+    //                     console.error('Error saving cookie');
+    //                 };
+    //             });
+    //     } catch (e) {
+    //         // TODO sanitize log and error
+    //         console.error('Unable set cookie due to error');
+    //     }
+    // });
+
+	window.webContents.on('did-fail-load', (event, errorCode, errorDescription, validatedURL, isMainFrame) => {
+		console.log('did-fail-load', event, errorCode, errorDescription, validatedURL, isMainFrame);
+	});
+
 	new Menus(window, config, iconPath);
+
+	// window.webContents.on('ipc-message', (...args) => console.log(args));
+	// window.webContents.on('ipc-message-sync', (...args) => console.log(args));
+	// window.webContents.on('desktop-capturer-get-sources', (...args) => console.log(args));
 
 	window.on('page-title-updated', (event, title) => {
 		window.webContents.send('page-title', title);
@@ -27,7 +60,7 @@ exports.onAppReady = function onAppReady() {
 
 	window.webContents.on('new-window', onNewWindow);
 
-	window.webContents.session.webRequest.onBeforeRequest(['http*'], onBeforeRequestHandler);
+	// window.webContents.session.webRequest.onBeforeRequest(['http*'], onBeforeRequestHandler);
 
 	login.handleLoginDialogTry(window);
 	if (config.onlineOfflineReload) {
@@ -165,8 +198,11 @@ function createWindow() {
 			partition: config.partition,
 			preload: path.join(__dirname, '..', 'browser', 'index.js'),
 			nativeWindowOpen: true,
-			plugins: true,
+			plugins: false, // true
 			nodeIntegration: false,
+			webSecurity: true, // none
+			nodeIntegrationInWorker: true,
+			// sandbox: false
 		},
 	});
 

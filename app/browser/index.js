@@ -1,4 +1,4 @@
-/* global angular */
+/* global angular, window */
 (function () {
 	const path = require('path');
 	const { ipcRenderer, remote } = require('electron');
@@ -9,9 +9,9 @@
 	if (config.onlineOfflineReload) {
 		require('./onlineOfflineListener')();
 	}
-	if (config.rightClickWithSpellcheck) {
-		require('./rightClickMenuWithSpellcheck');
-	}
+	// if (config.rightClickWithSpellcheck) {
+	// 	require('./rightClickMenuWithSpellcheck');
+	// }
 	require('./zoom')();
 
 	require('./desktopShare/chromeApi');
@@ -19,6 +19,10 @@
 	const iconPath = path.join(__dirname, '../assets/icons/icon-96x96.png');
 
 	new ActivityManager(ipcRenderer, iconPath).start();
+
+	window.desktop = {
+        ipcRenderer: ipcRenderer
+    };
 
 	if (config.enableDesktopNotificationsHack) {
 		pageTitleNotifications(ipcRenderer);
@@ -33,6 +37,30 @@
 		injector.get('settingsService').appConfig.promoteDesktop = false;
 		injector.get('settingsService').appConfig.hideGetAppButton = true;
 		injector.get('settingsService').appConfig.enableMobileDownloadMailDialog = false;
+
+	function modifyAngularSettingsWithTimeot() {
+		setTimeout(() => {
+			try {
+				let injector = angular.element(document).injector();
+
+				if(injector) {
+					window.desktop = {
+						ipcRenderer: ipcRenderer
+					};
+					window.electronSafeIpc =  ipcRenderer;
+					window.hasCallMonitorVideoRendererForwarding =true;
+
+					enableChromeVideoAudioMeetings(injector);
+					disablePromoteStuff(injector);
+
+					injector.get('settingsService').settingsService.refreshSettings();
+				}
+			} catch (error) {
+				if (error instanceof ReferenceError) {
+					modifyAngularSettingsWithTimeot();
+				}
+			}
+		}, 4000);
 	}
 
 	function enableChromeVideoAudioMeetings(injector) {
@@ -68,25 +96,6 @@
 		injector.get('settingsService').appConfig.enableUnreadMessagesButton = true;
 		injector.get('settingsService').appConfig.enableVideoBackground = true;
 		injector.get('settingsService').appConfig.disableCallingOnlineCheck = false;
-	}
-
-	function modifyAngularSettingsWithTimeot() {
-		setTimeout(() => {
-			try {
-				let injector = angular.element(document).injector();
-
-				if (injector) {
-					enableChromeVideoAudioMeetings(injector);
-					disablePromoteStuff(injector);
-
-					injector.get('settingsService').settingsService.refreshSettings();
-				}
-			} catch (error) {
-				if (error instanceof ReferenceError) {
-					modifyAngularSettingsWithTimeot();
-				}
-			}
-		}, 4000);
 	}
 
 	Object.defineProperty(navigator.serviceWorker, 'register', {
