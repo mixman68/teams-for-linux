@@ -34,25 +34,18 @@
     "release": "electron-builder"
   },
   "dependencies": {
-    "electron-dl": "3.0.0",
+    "electron-dl": "3.0.2",
     "electron-editor-context-menu": "1.1.1",
     "electron-native-notification": "1.2.1",
     "electron-window-state": "5.0.3",
     "@felixrieseberg/spellchecker": "4.0.12",
-    "yargs": "15.1.0"
+    "yargs": "16.2.0"
   },
   "devDependencies": {
-<<<<<<< HEAD
-    "electron": "4.2.8",
-    "electron-builder": "22.5.1",
-    "eslint": "5.16.0",
-    "yarn": "1.22.4"
-=======
-    "electron": "8.1.0",
-    "electron-builder": "22.4.0",
-    "eslint": "6.8.0",
-    "yarn": "1.22.1"
->>>>>>> origin/feature-156-move-electron-6
+    "electron": "11.2.1",
+    "electron-builder": "22.9.1",
+    "eslint": "7.18.0",
+    "yarn": "1.22.10"
   },
   "build": {
     "appId": "teams-for-linux",
