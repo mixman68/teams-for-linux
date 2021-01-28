@@ -22,3 +22,9 @@ exports.addDesktopNotificationHack = function addDesktopNotificationHack(iconPat
 		}
 	});
 };
+
+exports.addBadgeCounter = function addBadgeCounter() {
+	ipcMain.on('notifications', async (e, msg) => {
+		app.setBadgeCount(msg.count);
+	});
+};

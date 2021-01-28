@@ -24,7 +24,7 @@
 		ipcRenderer: ipcRenderer
 	};
 
-	if (config.enableDesktopNotificationsHack) {
+	if (config.enableDesktopNotificationsHack || process.platform === 'darwin') {
 		pageTitleNotifications(ipcRenderer);
 	}
 

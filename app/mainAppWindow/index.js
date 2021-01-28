@@ -1,5 +1,5 @@
 
-const { shell, ipcMain, BrowserWindow } = require('electron');
+const { shell, ipcMain, BrowserWindow, app } = require('electron');
 const windowStateKeeper = require('electron-window-state');
 const path = require('path');
 const login = require('../login');
@@ -57,6 +57,9 @@ exports.onAppReady = function onAppReady() {
 
 	if (config.enableDesktopNotificationsHack) {
 		notifications.addDesktopNotificationHack(iconPath);
+	}
+	if(process.platform === 'darwin') {
+		notifications.addBadgeCounter();
 	}
 
 	window.webContents.on('new-window', onNewWindow);
